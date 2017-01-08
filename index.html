@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="./node_modules/jquery/dist/jquery.js"></script>
+		<script src="./node_modules/backbone/node_modules/underscore/underscore.js"></script>
+		<script src="./node_modules/backbone/backbone.js"></script>
+		<style>
+			.button {
+				 text-align: center;
+				 width: 200px;
+				 height: 40px;
+				 margin: 30px auto 30px auto;
+				 background-color: red;
+				 color: #FFF;
+				 line-height: 40px;
+				 cursor: pointer;
+			}
+			.button:active {
+				background-color: green;
+			}
+		</style>
+	</head>
+	<body>
+		
+		<div class="app">
+			<div class="button">增加+</div>
+			<div class="content"></div>
+		</div>
+		<script type="tpl" class="tpl">
+			<div>say: 你是第<%= number %>个来访!</div>
+		</script>
+		<script>
+			var Model = Backbone.Model.extend({
+				defaults: function(){
+					return {
+						number: 0
+					}
+				}
+			});
+			var AppView = Backbone.View.extend({
+				el: '.app',
+				events: {
+					'click .button': 'add'
+				},
+				template: _.template($('.tpl').html()),
+				initialize: function(){
+					this.model = new Model();
+					this.listenTo(this.model,'change',this.render);
+					this.render();
+				},
+				add: function(){
+					this.model.set('number',this.model.get('number')+1);
+				},
+				render: function(){
+					$('.content',this.$el).append(this.template(this.model.toJSON()))
+				}
+			});
+			new AppView();
+		</script>
+	<body>
+</html>
